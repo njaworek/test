@@ -1,5 +1,6 @@
 *** Settings ***
 Library   SSHLibrary
+Library   Selenium2Library
 
 *** Variables ***
 ${MESSAGE}  Hello Tester, have a good day!
@@ -7,6 +8,11 @@ ${REMOTE_HOST}    127.0.0.1
 ${USERNAME}   tester
 ${PASSWORD}   tester
 ${Uname}
+${USERNAMEWP}    //*[@id="login"]
+${PASSWORDWP}      //*[@id="password"]
+${BUTTONWP}    //*[@id="btnSubmit"]
+${USER}   testerwsb_t1
+${PASSWORDUSER}   adam1234
 
 *** Test Cases ***
 1 Test log to Console
@@ -23,6 +29,14 @@ ${Uname}
     Zaloguj sie z poprawnymi userem i haslem
     Napisz komende i sprawdz poprawnosc
     Zamknij polaczenie
+6 Otworzenie strony z poczta WP
+    Otworzenie przegladarki
+    Wpisanie adresu poczta.wp.pl i przejscie na strone
+    Wprowadzenie poprawnego loginu
+    Wprowadzenie poprawnego hasla
+    Zaloguj sie
+    Sprawdzenie czy zostalismy zalogowanie
+    Zamkniecie przegladarki
 
 
 *** Keywords ***
@@ -37,7 +51,21 @@ Zaloguj sie z poprawnymi userem i haslem
   Login   ${USERNAME}   ${PASSWORD}
 Napisz komende i sprawdz poprawnosc
   ${Uname}=   Execute command    uname -a
-  Should not be empty   ${Uname}+
+  Should not be empty   ${Uname}
   Should Contain    ${Uname}    Linux
 Zamknij polaczenie
   Close Connection
+Otworzenie przegladarki
+  Open Browser    http://wp.pl
+Wpisanie adresu poczta.wp.pl i przejscie na strone
+  Go To     http://poczta.wp.pl
+Wprowadzenie poprawnego loginu
+  Input Text    ${USERNAMEWP}      ${USER}
+Wprowadzenie poprawnego hasla
+  Input Text     ${PASSWORDWP}    ${PASSWORDUSER}
+Zaloguj sie
+  Click Button    ${BUTTONWP}
+Sprawdzenie czy zostalismy zalogowanie
+  PAGE SHOULD Contain   Odebrane
+Zamkniecie przegladarki
+  CLose Browser
